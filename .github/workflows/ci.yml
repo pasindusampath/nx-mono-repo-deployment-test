@@ -47,7 +47,7 @@ jobs:
       - name: Build Web
         run: yarn workspace web build
         env:
-          API_URL: http://localhost:3000
+          API_URL: http://localhost:3009
       
       - name: Type Check
         run: yarn type-check
