@@ -16,7 +16,7 @@ interface ReadyResponse {
 
 router.get('/', (req: Request, res: Response) => {
   const response: HealthResponse = {
-    status: 'healthy',
+    status: 'healthy test',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development'
