@@ -10,7 +10,6 @@ WORKDIR /app
 
 # Copy workspace files
 COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn
 COPY apps/web/package.json ./apps/web/
 
 # Install dependencies

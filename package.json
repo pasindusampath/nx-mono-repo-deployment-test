@@ -28,7 +28,6 @@
     "apps/web",
     "libs/shared"
   ],
-  "dependencies": {},
   "devDependencies": {
     "@nx/js": "21.6.5",
     "@nx/workspace": "21.6.5",
