@@ -40,10 +40,10 @@ COPY --from=builder /app/node_modules ./node_modules
 
 # Set environment
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3009
 
 USER nodejs
 
-EXPOSE 3000
+EXPOSE 3009
 
 CMD ["node", "dist/main.js"]

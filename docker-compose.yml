@@ -7,15 +7,15 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: nx-api
     ports:
-      - "3000:3000"
+      - "3009:3009"
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3009
     restart: unless-stopped
     networks:
-      - nx-network
+      - npm_network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3009/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -27,40 +27,24 @@ services:
       dockerfile: apps/web/Dockerfile
     container_name: nx-web
     ports:
-      - "3001:3001"
+      - "3008:3008"
     environment:
       - NODE_ENV=production
-      - API_URL=http://api:3000
-      - PORT=3001
+      - API_URL=http://nx-api:3009
+      - PORT=3008
     depends_on:
       - api
     restart: unless-stopped
     networks:
-      - nx-network
+      - npm_network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3008"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  nginx:
-    image: nginx:alpine
-    container_name: nx-nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - api
-      - web
-    restart: unless-stopped
-    networks:
-      - nx-network
-
 networks:
-  nx-network:
-    driver: bridge
+  npm_network:
+    external: true
 

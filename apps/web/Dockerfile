@@ -13,9 +13,7 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY apps/web/package.json ./apps/web/
 
 # Install dependencies (including dev dependencies for build)
-WORKDIR /app/apps/web
-RUN yarn workspaces focus
-WORKDIR /app
+RUN yarn workspaces focus web
 
 # Build stage
 FROM base AS builder
@@ -23,6 +21,9 @@ WORKDIR /app
 
 # Copy dependencies from root (Yarn workspaces hoists to root)
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy workspace configuration
+COPY package.json yarn.lock .yarnrc.yml ./
 
 # Copy application files
 COPY apps/web ./apps/web
@@ -45,17 +46,15 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/web/public ./public
-
 # Automatically leverage output traces to reduce image size
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
 USER nextjs
 
-EXPOSE 3001
+EXPOSE 3008
 
-ENV PORT=3001
+ENV PORT=3008
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]
