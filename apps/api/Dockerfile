@@ -13,8 +13,10 @@ COPY apps/api/package.json ./apps/api/
 COPY apps/api/tsconfig.json ./apps/api/
 COPY tsconfig.base.json ./
 
-# Install dependencies
-RUN yarn workspaces focus api --production=false
+# Install dependencies (including dev dependencies for build)
+WORKDIR /app/apps/api
+RUN yarn workspaces focus
+WORKDIR /app
 
 # Copy source code
 COPY apps/api/src ./apps/api/src

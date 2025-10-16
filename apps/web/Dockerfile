@@ -12,8 +12,10 @@ WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY apps/web/package.json ./apps/web/
 
-# Install dependencies
-RUN yarn workspaces focus web --production=false
+# Install dependencies (including dev dependencies for build)
+WORKDIR /app/apps/web
+RUN yarn workspaces focus
+WORKDIR /app
 
 # Build stage
 FROM base AS builder
