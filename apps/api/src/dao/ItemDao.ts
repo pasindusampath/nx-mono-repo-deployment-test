@@ -1,5 +1,9 @@
-import ItemModel, { ItemFields } from '../models/Item.model';
-import { IItem, CreateItemDto, UpdateItemDto } from '@nx-mono-repo-deployment-test/shared';
+import ItemModel from '../models/Item.model';
+import { 
+  IItem, 
+  CreateItemDto, 
+  UpdateItemDto 
+} from '@nx-mono-repo-deployment-test/shared';
 
 /**
  * Data Access Object for Item entity
@@ -26,7 +30,7 @@ class ItemDao {
   public async findAll(): Promise<IItem[]> {
     try {
       const items = await ItemModel.findAll({
-        order: [[ItemFields.CREATED_AT, 'DESC']],
+        order: [[ItemModel.ITEM_CREATED_AT, 'DESC']],
       });
       return items.map(item => item.toJSON() as IItem);
     } catch (error) {
@@ -54,8 +58,8 @@ class ItemDao {
   public async create(createItemDto: CreateItemDto): Promise<IItem> {
     try {
       const item = await ItemModel.create({
-        [ItemFields.NAME]: createItemDto.name,
-        [ItemFields.DESCRIPTION]: createItemDto.description,
+        [ItemModel.ITEM_NAME]: createItemDto.name,
+        [ItemModel.ITEM_DESCRIPTION]: createItemDto.description,
       });
       return item.toJSON() as IItem;
     } catch (error) {
@@ -76,10 +80,10 @@ class ItemDao {
 
       // Update only provided fields
       if (updateItemDto.name !== undefined) {
-        item[ItemFields.NAME] = updateItemDto.name;
+        item[ItemModel.ITEM_NAME] = updateItemDto.name;
       }
       if (updateItemDto.description !== undefined) {
-        item[ItemFields.DESCRIPTION] = updateItemDto.description;
+        item[ItemModel.ITEM_DESCRIPTION] = updateItemDto.description;
       }
 
       await item.save();

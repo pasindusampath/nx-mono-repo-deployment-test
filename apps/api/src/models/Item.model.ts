@@ -2,23 +2,18 @@ import { Table, Column, Model, DataType, CreatedAt, UpdatedAt, PrimaryKey, AutoI
 import { IItem } from '@nx-mono-repo-deployment-test/shared';
 
 
-export const ITEM_TABLE_NAME = 'items';
-
-export const ItemFields = {
-  ID: 'id',
-  NAME: 'name',
-  DESCRIPTION: 'description',
-  CREATED_AT: 'createdAt',
-  UPDATED_AT: 'updatedAt',
-} as const;
-
-
 @Table({
-  tableName: ITEM_TABLE_NAME,
+  tableName: ItemModel.TABLE_NAME,
   timestamps: true,
   underscored: false,
 })
 export default class ItemModel extends Model<IItem> implements IItem {
+  public static readonly TABLE_NAME = 'items';
+  public static readonly ITEM_ID = 'id';
+  public static readonly ITEM_NAME = 'name';
+  public static readonly ITEM_DESCRIPTION = 'description';
+  public static readonly ITEM_CREATED_AT = 'createdAt';
+  public static readonly ITEM_UPDATED_AT = 'updatedAt';
   @PrimaryKey
   @AutoIncrement
   @Column({
@@ -26,7 +21,7 @@ export default class ItemModel extends Model<IItem> implements IItem {
     allowNull: false,
     autoIncrement: true,
     primaryKey: true,
-    field: ItemFields.ID,
+    field: ItemModel.ITEM_ID,
   })
   id!: number;
 
@@ -36,26 +31,26 @@ export default class ItemModel extends Model<IItem> implements IItem {
     validate: {
       notEmpty: true,
     },
-    field: ItemFields.NAME,
+    field: ItemModel.ITEM_NAME,
   })
   name!: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
-    field: ItemFields.DESCRIPTION,
+    field: ItemModel.ITEM_DESCRIPTION,
   })
   description?: string;
 
   @CreatedAt
   @Column({
     type: DataType.DATE,
-    field: ItemFields.CREATED_AT,
+    field: ItemModel.ITEM_CREATED_AT,
   })
   createdAt!: Date;
     @Column({
     type: DataType.DATE,
-    field: ItemFields.CREATED_AT,
+    field: ItemModel.ITEM_UPDATED_AT,
   })
   updatedAt!: Date;
 }
