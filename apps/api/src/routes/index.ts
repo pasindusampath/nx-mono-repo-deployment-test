@@ -17,10 +17,10 @@ export * from './item';
 export * from './health';
 
 // Export RouterManager
-export { RouterManager } from './RouterManager';
+export { RouterManager } from './router_manager';
 
 // Re-export commonly used classes for convenience
-export { BaseRouter } from './common/BaseRouter';
-export { ItemRouter } from './item/ItemRouter';
-export { HealthRouter } from './health/HealthRouter';
+export { BaseRouter } from './common/base_router';
+export { ItemRouter } from './item/item_router';
+export { HealthRouter } from './health/health_router';
 

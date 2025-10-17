@@ -5,7 +5,7 @@
  * No manual initialization needed!
  */
 import { sequelize } from '../config';
-import ItemModel from './Item.model';
+import ItemModel from './item.model';
 
 /**
  * Initialize model associations here
@@ -17,7 +17,7 @@ export const initializeAssociations = (): void => {
 };
 
 // Export individual models (constants are accessible via ItemModel.TABLE_NAME, etc.)
-export { default as ItemModel } from './Item.model';
+export { default as ItemModel } from './item.model';
 
 // Export sequelize instance
 export { sequelize };

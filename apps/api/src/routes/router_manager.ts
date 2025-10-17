@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { ItemRouter } from './item/ItemRouter';
-import { HealthRouter } from './health/HealthRouter';
+import { ItemRouter } from './item/item_router';
+import { HealthRouter } from './health/health_router';
 
 // Route prefix constants
 const API_PREFIX = '/api'; // Prefix for all API routes

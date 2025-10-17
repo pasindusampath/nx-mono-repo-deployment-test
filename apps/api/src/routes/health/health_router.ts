@@ -1,4 +1,4 @@
-import { BaseRouter } from '../common/BaseRouter';
+import { BaseRouter } from '../common/base_router';
 import { HealthController } from '../../controllers';
 import Database from '../../database';
 

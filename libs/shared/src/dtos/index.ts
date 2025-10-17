@@ -23,7 +23,7 @@ export * from './params';
 export * from './item';
 
 // Re-export commonly used types for convenience
-export { BaseDto, ValidationFailedError } from './common/BaseDto';
+export { BaseDto, ValidationFailedError } from './common/base_dto';
 export { IdParamDto } from './params';
 export { CreateItemDto, UpdateItemDto, ItemResponseDto } from './item';
 

@@ -1,4 +1,4 @@
 /**
  * Item domain routes
  */
-export * from './ItemRouter';
+export * from './item_router';

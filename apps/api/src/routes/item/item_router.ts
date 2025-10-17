@@ -1,4 +1,4 @@
-import { BaseRouter } from '../common/BaseRouter';
+import { BaseRouter } from '../common/base_router';
 import { ItemController } from '../../controllers';
 import { ItemService } from '../../services';
 import { ValidationMiddleware } from '../../middleware';

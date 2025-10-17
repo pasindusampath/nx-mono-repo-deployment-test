@@ -1,4 +1,4 @@
 /**
  * Common route utilities and base classes
  */
-export * from './BaseRouter';
+export * from './base_router';

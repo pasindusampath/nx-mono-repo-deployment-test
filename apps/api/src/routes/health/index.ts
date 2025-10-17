@@ -1,4 +1,4 @@
 /**
  * Health domain routes
  */
-export * from './HealthRouter';
+export * from './health_router';

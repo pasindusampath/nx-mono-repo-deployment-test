@@ -1,4 +1,4 @@
-import ItemModel from '../models/Item.model';
+import ItemModel from '../models/item.model';
 import { 
   IItem, 
   CreateItemDto, 

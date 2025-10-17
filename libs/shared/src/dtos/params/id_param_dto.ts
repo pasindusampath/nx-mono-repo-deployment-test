@@ -1,6 +1,6 @@
 import { IsInt, IsPositive } from 'class-validator';
 import { Type } from 'class-transformer';
-import { BaseDto } from '../common/BaseDto';
+import { BaseDto } from '../common/base_dto';
 import { IParamDto } from '../../interfaces';
 
 /**

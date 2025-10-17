@@ -1,4 +1,4 @@
 /**
  * Common DTOs - Base classes and utilities
  */
-export * from './BaseDto';
+export * from './base_dto';

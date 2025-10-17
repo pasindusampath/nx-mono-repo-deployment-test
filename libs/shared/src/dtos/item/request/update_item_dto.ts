@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsInt, Length, ValidateIf } from 'class-validator';
-import { BaseDto } from '../../common/BaseDto';
+import { BaseDto } from '../../common/base_dto';
 import { IBodyDto } from '../../../interfaces';
 
 /**
