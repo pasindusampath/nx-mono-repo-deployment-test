@@ -1,14 +1,9 @@
 import { Table, Column, Model, DataType, CreatedAt, UpdatedAt, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 import { IItem } from '@nx-mono-repo-deployment-test/shared';
 
-/**
- * Table name constant
- */
+
 export const ITEM_TABLE_NAME = 'items';
 
-/**
- * Field name constants
- */
 export const ItemFields = {
   ID: 'id',
   NAME: 'name',
@@ -17,10 +12,7 @@ export const ItemFields = {
   UPDATED_AT: 'updatedAt',
 } as const;
 
-/**
- * Item Model with decorator-based configuration
- * Clean, simple, and beginner-friendly!
- */
+
 @Table({
   tableName: ITEM_TABLE_NAME,
   timestamps: true,
@@ -29,7 +21,13 @@ export const ItemFields = {
 export default class ItemModel extends Model<IItem> implements IItem {
   @PrimaryKey
   @AutoIncrement
-  @Column(DataType.INTEGER)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+    field: ItemFields.ID,
+  })
   id!: number;
 
   @Column({
@@ -38,21 +36,26 @@ export default class ItemModel extends Model<IItem> implements IItem {
     validate: {
       notEmpty: true,
     },
+    field: ItemFields.NAME,
   })
   name!: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
+    field: ItemFields.DESCRIPTION,
   })
   description?: string;
 
   @CreatedAt
-  @Column(DataType.DATE)
+  @Column({
+    type: DataType.DATE,
+    field: ItemFields.CREATED_AT,
+  })
   createdAt!: Date;
-
-  @UpdatedAt
-  @Column(DataType.DATE)
+    @Column({
+    type: DataType.DATE,
+    field: ItemFields.CREATED_AT,
+  })
   updatedAt!: Date;
 }
-
