@@ -33,13 +33,14 @@ function createValidationMiddleware<T extends BaseDto>(
       (req as any)[source] = validatedDto;
       
       next();
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof ValidationFailedError) {
         // Handle validation errors
+        const validationError = error as ValidationFailedError;
         res.status(400).json({
           success: false,
-          error: error.message,
-          details: error.errors,
+          error: validationError.message,
+          details: validationError.errors,
         });
         return;
       }
