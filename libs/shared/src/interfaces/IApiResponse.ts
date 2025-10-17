@@ -7,5 +7,6 @@ export interface IApiResponse<T = any> {
   error?: string;
   message?: string;
   count?: number;
+  details?: any;
 }
 

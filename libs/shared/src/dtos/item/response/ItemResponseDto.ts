@@ -1,4 +1,5 @@
-import { IItem } from '../interfaces/IItem';
+import { IItem } from "../../../interfaces/IItem";
+
 
 /**
  * DTO for item response

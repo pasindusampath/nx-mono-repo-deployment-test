@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ItemService } from '../services';
-import { CreateItemDto, UpdateItemDto } from '@nx-mono-repo-deployment-test/shared';
+import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared';
 
 /**
  * Controller for Item endpoints
@@ -38,19 +38,12 @@ class ItemController {
   /**
    * GET /api/items/:id
    * Get item by ID
+   * Note: ID validation is handled by middleware
    */
   public async getItemById(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id, 10);
-
-      if (isNaN(id)) {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid item ID',
-        });
-        return;
-      }
-
+      // ID is already validated and converted by middleware
+      const { id } = (req.params as any) as IdParamDto;
       const result = await this.itemService.getItemById(id);
 
       if (result.success) {
@@ -70,12 +63,12 @@ class ItemController {
   /**
    * POST /api/items
    * Create a new item
+   * Note: Body validation is handled by middleware
    */
   public async createItem(req: Request, res: Response): Promise<void> {
     try {
-      const { name, description } = req.body;
-
-      const createItemDto = new CreateItemDto(name, description);
+      // Body is already validated and transformed to CreateItemDto by middleware
+      const createItemDto = req.body as CreateItemDto;
       const result = await this.itemService.createItem(createItemDto);
 
       if (result.success) {
@@ -95,22 +88,13 @@ class ItemController {
   /**
    * PUT /api/items/:id
    * Update an item
+   * Note: ID and body validation is handled by middleware
    */
   public async updateItem(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id, 10);
-
-      if (isNaN(id)) {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid item ID',
-        });
-        return;
-      }
-
-      const { name, description } = req.body;
-
-      const updateItemDto = new UpdateItemDto({ name, description });
+      // ID and body are already validated by middleware
+      const { id } = (req.params as any) as IdParamDto;
+      const updateItemDto = req.body as UpdateItemDto;
       const result = await this.itemService.updateItem(id, updateItemDto);
 
       if (result.success) {
@@ -130,19 +114,12 @@ class ItemController {
   /**
    * DELETE /api/items/:id
    * Delete an item
+   * Note: ID validation is handled by middleware
    */
   public async deleteItem(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id, 10);
-
-      if (isNaN(id)) {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid item ID',
-        });
-        return;
-      }
-
+      // ID is already validated and converted by middleware
+      const { id } = (req.params as any) as IdParamDto;
       const result = await this.itemService.deleteItem(id);
 
       if (result.success) {

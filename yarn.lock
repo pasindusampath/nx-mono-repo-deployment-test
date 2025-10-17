@@ -1764,10 +1764,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nx-mono-repo-deployment-test/shared@workspace:libs/shared":
+"@nx-mono-repo-deployment-test/shared@workspace:*, @nx-mono-repo-deployment-test/shared@workspace:libs/shared":
   version: 0.0.0-use.local
   resolution: "@nx-mono-repo-deployment-test/shared@workspace:libs/shared"
   dependencies:
+    class-transformer: "npm:^0.5.1"
+    class-validator: "npm:^0.14.1"
     typescript: "npm:^5.3.3"
   languageName: unknown
   linkType: soft
@@ -2241,7 +2243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/validator@npm:^13.11.7, @types/validator@npm:^13.7.17":
+"@types/validator@npm:^13.11.7, @types/validator@npm:^13.11.8, @types/validator@npm:^13.7.17":
   version: 13.15.3
   resolution: "@types/validator@npm:13.15.3"
   checksum: ee1f6266724595b715a01a4f9a2fd601b292906625dbb088ee60b43b3f47cbe371a09a793f2456ef7f6a35d53c9b208897a3d1dfdc4ad1a006ff3707d82f3e22
@@ -2813,6 +2815,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "api@workspace:apps/api"
   dependencies:
+    "@nx-mono-repo-deployment-test/shared": "workspace:*"
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^4.17.21"
     "@types/morgan": "npm:^1.9.9"
@@ -2820,6 +2823,8 @@ __metadata:
     "@types/validator": "npm:^13.11.7"
     "@typescript-eslint/eslint-plugin": "npm:^6.15.0"
     "@typescript-eslint/parser": "npm:^6.15.0"
+    class-transformer: "npm:^0.5.1"
+    class-validator: "npm:^0.14.1"
     cors: "npm:^2.8.5"
     dotenv: "npm:^16.3.1"
     eslint: "npm:^8.56.0"
@@ -3379,6 +3384,24 @@ __metadata:
   version: 3.0.0
   resolution: "chownr@npm:3.0.0"
   checksum: 43925b87700f7e3893296c8e9c56cc58f926411cce3a6e5898136daaf08f08b9a8eb76d37d3267e707d0dcc17aed2e2ebdf5848c0c3ce95cf910a919935c1b10
+  languageName: node
+  linkType: hard
+
+"class-transformer@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "class-transformer@npm:0.5.1"
+  checksum: 19809914e51c6db42c036166839906420bb60367df14e15f49c45c8c1231bf25ae661ebe94736ee29cc688b77101ef851a8acca299375cc52fc141b64acde18a
+  languageName: node
+  linkType: hard
+
+"class-validator@npm:^0.14.1":
+  version: 0.14.2
+  resolution: "class-validator@npm:0.14.2"
+  dependencies:
+    "@types/validator": "npm:^13.11.8"
+    libphonenumber-js: "npm:^1.11.1"
+    validator: "npm:^13.9.0"
+  checksum: 5bb67389d38fa23d342dffdd8e2dcee8235e1906e59799df5b2050278a6d89292fcaa88167f0215e3ddd684f47dcd51b004efa7be32d8aded91ee06cb317b3b8
   languageName: node
   linkType: hard
 
@@ -5749,6 +5772,13 @@ __metadata:
     prelude-ls: "npm:^1.2.1"
     type-check: "npm:~0.4.0"
   checksum: effb03cad7c89dfa5bd4f6989364bfc79994c2042ec5966cb9b95990e2edee5cd8969ddf42616a0373ac49fac1403437deaf6e9050fbbaa3546093a59b9ac94e
+  languageName: node
+  linkType: hard
+
+"libphonenumber-js@npm:^1.11.1":
+  version: 1.12.24
+  resolution: "libphonenumber-js@npm:1.12.24"
+  checksum: e31cf01e3d3b9025428fb208dcb0a76668d0125638700fe1befdc1df3cc068ea05742260f43ccc54805ded6410b8e6ce1ef80bd6eba9fbe7c76ec930b61373d4
   languageName: node
   linkType: hard
 

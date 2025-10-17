@@ -21,6 +21,17 @@
       "@nx-mono-repo-deployment-test/shared": ["libs/shared/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp", "dist", ".next"]
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist",
+    ".next",
+    ".cursor/**/*",
+    ".cursorrules",
+    "**/.cursorrules",
+    "**/*.md",
+    "**/*.plan.md",
+    "docs/**/*"
+  ]
 }
 
