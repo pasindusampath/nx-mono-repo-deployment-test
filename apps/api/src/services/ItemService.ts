@@ -86,10 +86,10 @@ class ItemService {
       }
 
       // Business logic: Trim whitespace
-      const trimmedDto = new CreateItemDto(
-        createItemDto.name.trim(),
-        createItemDto.description?.trim()
-      );
+      const trimmedDto = new CreateItemDto({
+        name: createItemDto.name.trim(),
+        description: createItemDto.description?.trim()
+      });
 
       const item = await this.itemDao.create(trimmedDto);
 
