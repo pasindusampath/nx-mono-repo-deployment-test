@@ -5,7 +5,7 @@ import { IValidatableConstructor, IBodyDto, IParamDto } from '@nx-mono-repo-depl
 /**
  * Extended Request interface with typed validation results
  */
-export interface ValidatedRequest<TBody = any, TParams = any, TQuery = any> extends Omit<Request, 'body' | 'params' | 'query'> {
+export interface ValidatedRequest<TBody = unknown, TParams = unknown, TQuery = unknown> extends Omit<Request, 'body' | 'params' | 'query'> {
   body: TBody;
   params: TParams;
   query: TQuery;
@@ -30,7 +30,7 @@ function createValidationMiddleware<T extends BaseDto>(
       const validatedDto = await dtoClass.fromPlainObject(sourceData);
       
       // Attach validated DTO to request
-      (req as any)[source] = validatedDto;
+      (req as unknown as Record<string, unknown>)[source] = validatedDto;
       
       next();
     } catch (error: unknown) {

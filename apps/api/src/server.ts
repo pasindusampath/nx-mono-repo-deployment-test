@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { Server as HttpServer } from 'http';
 import Database from './database';
 import { RouterManager } from './routes';
 import { normalizeResponse, errorHandler } from './middleware';
@@ -15,7 +16,7 @@ class Server {
   private static instance: Server;
   private app: Application;
   private database: Database;
-  private server: any;
+  private server!: HttpServer;
 
   private constructor() {
     this.app = express();
@@ -111,7 +112,7 @@ class Server {
           resolve();
         });
 
-        this.server.on('error', (error: any) => {
+        this.server.on('error', (error: Error & { code?: string }) => {
           if (error.code === 'EADDRINUSE') {
             console.error(`✗ Port ${port} is already in use`);
             reject(new Error(`Port ${port} is already in use. Please stop the existing server or use a different port.`));
@@ -136,7 +137,7 @@ class Server {
       
       // Close HTTP server
       if (this.server) {
-        await new Promise<void>((resolve, reject) => {
+        await new Promise<void>((resolve, _reject) => {
           const timeout = setTimeout(() => {
             console.log('⚠️  Force closing server after timeout');
             resolve();
@@ -149,9 +150,9 @@ class Server {
               // Don't reject, just log and continue
             }
             resolve();
-          });
+          }); 
         });
-        this.server = null;
+        this.server = undefined as unknown as HttpServer;
       }
 
       // Close database connection

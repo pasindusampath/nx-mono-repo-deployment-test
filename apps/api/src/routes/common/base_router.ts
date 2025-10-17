@@ -62,7 +62,7 @@ export abstract class BaseRouter {
    * @param controllerMethod - The controller method to bind
    * @returns Bound method that preserves 'this' context
    */
-  protected bindMethod<T extends (...args: any[]) => any>(controllerMethod: T): T {
+  protected bindMethod<T extends (...args: unknown[]) => unknown>(controllerMethod: T): T {
     return controllerMethod.bind(controllerMethod) as T;
   }
 }

@@ -2,6 +2,12 @@ import { Router } from 'express';
 import { ItemRouter } from './item/item_router';
 import { HealthRouter } from './health/health_router';
 
+// Interface for router-like objects
+interface RouterLike {
+  getBasePath(): string;
+  getRouter(): Router;
+}
+
 // Route prefix constants
 const API_PREFIX = '/api'; // Prefix for all API routes
 
@@ -78,7 +84,7 @@ export class RouterManager {
    * Add a new API router (gets /api prefix automatically)
    * @param router - The router instance that extends BaseRouter
    */
-  public addApiRouter(router: any): void {
+  public addApiRouter(router: RouterLike): void {
     if (!router.getBasePath || typeof router.getBasePath !== 'function') {
       throw new Error('API Router must extend BaseRouter with getBasePath() method');
     }
@@ -92,7 +98,7 @@ export class RouterManager {
    * @param router - The router instance to add (BaseRouter or Express Router)
    * @param customPath - Optional custom path override
    */
-  public addRouter(router: Router | any, customPath?: string): void {
+  public addRouter(router: Router | RouterLike, customPath?: string): void {
     if (customPath) {
       // Use custom path if provided
       this.mainRouter.use(customPath, router instanceof Router ? router : router.getRouter());

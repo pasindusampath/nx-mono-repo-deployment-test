@@ -5,10 +5,11 @@ import { IApiResponse } from '@nx-mono-repo-deployment-test/shared';
  * Extends Express Response with custom methods for normalized responses
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Response {
       sendSuccess<T>(data: T, message?: string, statusCode?: number): void;
-      sendError(error: string, statusCode?: number, details?: any): void;
+      sendError(error: string, statusCode?: number, details?: unknown): void;
     }
   }
 }
@@ -48,7 +49,7 @@ export function normalizeResponse(req: Request, res: Response, next: NextFunctio
    * @param statusCode - HTTP status code (default: 500)
    * @param details - Optional error details
    */
-  res.sendError = function (error: string, statusCode: number = 500, details?: any): void {
+  res.sendError = function (error: string, statusCode: number = 500, details?: unknown): void {
     const response: IApiResponse = {
       success: false,
       error,
