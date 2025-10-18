@@ -25,10 +25,17 @@ WORKDIR /app
 COPY apps/api/src ./apps/api/src
 COPY libs/shared/src ./libs/shared/src
 
-# Build shared library first, then API
-RUN yarn workspace @nx-mono-repo-deployment-test/shared build
+# Build shared library first
+RUN echo "Building shared library..." && \
+    yarn workspace @nx-mono-repo-deployment-test/shared build && \
+    echo "Shared library built successfully"
+
+# Build API
 WORKDIR /app/apps/api
-RUN yarn build
+RUN echo "Building API..." && \
+    yarn build && \
+    echo "API built successfully" && \
+    ls -la dist/
 
 # Production stage
 FROM base AS production
