@@ -13,7 +13,7 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY apps/web/package.json ./apps/web/
 
 # Install dependencies (including dev dependencies for build)
-RUN yarn workspaces focus web --frozen-lockfile
+RUN yarn workspaces focus web
 
 # Build stage
 FROM base AS builder

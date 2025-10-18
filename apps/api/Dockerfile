@@ -17,8 +17,9 @@ COPY libs/shared/project.json ./libs/shared/
 COPY tsconfig.base.json ./
 
 # Install dependencies (including dev dependencies for build)
-# Note: Using regular install in Docker since we're building from scratch
-RUN yarn install --frozen-lockfile
+WORKDIR /app/apps/api
+RUN yarn workspaces focus
+WORKDIR /app
 
 # Copy source code
 COPY apps/api/src ./apps/api/src
