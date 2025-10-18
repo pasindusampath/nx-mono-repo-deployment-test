@@ -17,6 +17,7 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+!.yarn/install-state.gz
 .pnp.*
 
 # IDEs and editors
