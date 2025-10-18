@@ -1,5 +1,6 @@
 import { ItemDao } from '../dao';
-import { CreateItemDto, UpdateItemDto, ItemResponseDto, IApiResponse } from '@nx-mono-repo-deployment-test/shared';
+import { CreateItemDto, UpdateItemDto,ItemResponseDto } from '@nx-mono-repo-deployment-test/shared/src/dtos/item';
+import { IApiResponse } from '@nx-mono-repo-deployment-test/shared/src/interfaces';
 
 /**
  * Service layer for Item business logic

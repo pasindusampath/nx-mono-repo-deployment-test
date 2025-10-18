@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ItemService } from '../services';
-import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared';
+import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared/src/dtos';
 
 /**
  * Controller for Item endpoints

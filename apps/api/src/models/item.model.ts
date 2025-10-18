@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, CreatedAt, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import { IItem } from '@nx-mono-repo-deployment-test/shared';
+import { IItem } from '@nx-mono-repo-deployment-test/shared/src/interfaces';
 
 
 @Table({

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { IApiResponse } from '@nx-mono-repo-deployment-test/shared';
+import { IApiResponse } from '@nx-mono-repo-deployment-test/shared/src/interfaces';
 
 /**
  * Extends Express Response with custom methods for normalized responses

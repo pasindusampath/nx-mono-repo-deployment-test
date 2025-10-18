@@ -2,7 +2,8 @@ import { BaseRouter } from '../common/base_router';
 import { ItemController } from '../../controllers';
 import { ItemService } from '../../services';
 import { ValidationMiddleware } from '../../middleware';
-import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared';
+import { CreateItemDto, UpdateItemDto } from '@nx-mono-repo-deployment-test/shared/src/dtos/item/request';
+import { IdParamDto } from '@nx-mono-repo-deployment-test/shared/src/dtos/params';
 
 // Route path constants
 const ITEM_BASE_PATH = '/items'; // Full path: /api/items (api prefix added by RouterManager)

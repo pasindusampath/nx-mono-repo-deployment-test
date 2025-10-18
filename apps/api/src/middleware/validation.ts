@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { BaseDto, ValidationFailedError } from '@nx-mono-repo-deployment-test/shared';
-import { IValidatableConstructor, IBodyDto, IParamDto } from '@nx-mono-repo-deployment-test/shared';
+import { BaseDto, ValidationFailedError } from '@nx-mono-repo-deployment-test/shared/src/dtos/common';
+import { IValidatableConstructor, IBodyDto, IParamDto } from '@nx-mono-repo-deployment-test/shared/src/interfaces';
 
 /**
  * Extended Request interface with typed validation results
