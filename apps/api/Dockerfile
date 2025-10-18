@@ -9,6 +9,7 @@ WORKDIR /app
 
 # Copy workspace files
 COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn
 COPY apps/api/package.json ./apps/api/
 COPY apps/api/tsconfig.json ./apps/api/
 COPY libs/shared/package.json ./libs/shared/

@@ -7,6 +7,7 @@ import { Server as HttpServer } from 'http';
 import Database from './database';
 import { RouterManager } from './routes';
 import { normalizeResponse, errorHandler } from './middleware';
+import { Environment, getCurrentEnvironment, getEnvironmentDisplayName, isDevelopment } from './enums';
 
 /**
  * Server class - Handles application lifecycle
@@ -95,8 +96,8 @@ class Server {
       // Initialize database
       await this.database.connect();
       
-      // Sync database models
-      const shouldAlter = process.env.NODE_ENV === 'development';
+      // Sync database models (only alter in development)
+      const shouldAlter = isDevelopment();
       await this.database.sync(false, shouldAlter);
 
       // Setup application
@@ -108,7 +109,7 @@ class Server {
       await new Promise<void>((resolve, reject) => {
         this.server = this.app.listen(port, () => {
           console.log(`✓ API Server is running on port ${port}`);
-          console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+          console.log(`✓ Environment: ${getEnvironmentDisplayName(getCurrentEnvironment())}`);
           resolve();
         });
 
