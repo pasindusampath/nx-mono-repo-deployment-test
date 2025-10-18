@@ -51,6 +51,10 @@ jobs:
         run: yarn workspace web lint || echo "Linting complete"
         continue-on-error: true
       
+      - name: Build Shared Library
+        run: yarn workspace @nx-mono-repo-deployment-test/shared build
+        continue-on-error: false
+      
       - name: Build API
         run: yarn workspace api build
         continue-on-error: false

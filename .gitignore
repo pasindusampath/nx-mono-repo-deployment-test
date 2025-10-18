@@ -64,3 +64,10 @@ Thumbs.db
 # Docker
 docker/nginx/ssl/*.pem
 docker/nginx/ssl/*.key
+
+# Documentation
+docs/
+
+# Cursor AI
+.cursor
+*.plan.md

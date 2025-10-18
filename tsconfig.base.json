@@ -18,9 +18,20 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-mono-repo-deployment-test/shared": ["libs/shared/src/index.ts"]
+      "@nx-mono-repo-deployment-test/shared": ["dist/libs/shared/libs/shared/src/index.d.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp", "dist", ".next"]
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist",
+    ".next",
+    ".cursor/**/*",
+    ".cursorrules",
+    "**/.cursorrules",
+    "**/*.md",
+    "**/*.plan.md",
+    "docs/**/*"
+  ]
 }
 

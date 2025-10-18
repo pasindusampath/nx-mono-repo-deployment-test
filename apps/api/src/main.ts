@@ -1,45 +1,70 @@
-import express, { Request, Response, NextFunction, Application } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
+import 'reflect-metadata'; // Required for decorators - MUST BE FIRST!
 import dotenv from 'dotenv';
+import Server from './server';
 
-import healthRoutes from './routes/health';
-import apiRoutes from './routes/api';
-
+// Load environment variables
 dotenv.config();
 
-const app: Application = express();
-const port: number = parseInt(process.env.PORT || '3000', 10);
+// Get port from environment or use default
+const port = parseInt(process.env.PORT || '3000', 10);
 
-// Middleware
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined'));
+// Get server instance
+const server = Server.getInstance();
 
-// Routes
-app.use('/health', healthRoutes);
-app.use('/api', apiRoutes);
+/**
+ * Graceful shutdown handler
+ */
+const gracefulShutdown = async (signal: string) => {
+  console.log(`\n${signal} received. Shutting down gracefully...`);
+  try {
+    await server.stop();
+    console.log('✓ Graceful shutdown completed');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error during shutdown:', error);
+    process.exit(1);
+  }
+};
 
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+/**
+ * Force cleanup on process exit
+ */
+const forceCleanup = () => {
+  console.log('\n⚠️  Force cleanup on process exit');
+  // Don't await here as process is already exiting
+  server.stop().catch(() => {
+    // Ignore errors during force cleanup
   });
+};
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle ts-node-dev restart signal
+process.on('SIGUSR2', () => gracefulShutdown('SIGUSR2 (restart)'));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  gracefulShutdown('uncaughtException');
 });
 
-// 404 handler
-app.use((req: Request, res: Response) => {
-  res.status(404).json({ error: 'Not Found' });
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  gracefulShutdown('unhandledRejection');
 });
 
-app.listen(port, () => {
-  console.log(`🚀 API Server is running on port ${port}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+// Force cleanup on process exit (last resort)
+process.on('exit', forceCleanup);
+process.on('beforeExit', forceCleanup);
+
+// Start the server
+server.start(port).catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 });
 
-export default app;
+// Export for testing
+export default server;
