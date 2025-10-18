@@ -47,35 +47,35 @@ export class ItemRouter extends BaseRouter {
     // GET /api/items - Get all items
     this.router.get(
       '/',
-      controller.getItems.bind(controller)
+      controller.getItems
     );
 
     // GET /api/items/:id - Get item by ID
     this.router.get(
       '/:id',
       ValidationMiddleware.params(IdParamDto),
-      controller.getItemById.bind(controller)
+      controller.getItemById
     );
 
     // POST /api/items - Create new item
     this.router.post(
       '/',
       ValidationMiddleware.body(CreateItemDto),
-      controller.createItem.bind(controller)
+      controller.createItem
     );
 
     // PUT /api/items/:id - Update item
     this.router.put(
       '/:id',
       ...ValidationMiddleware.bodyAndParams(UpdateItemDto, IdParamDto),
-      controller.updateItem.bind(controller)
+      controller.updateItem
     );
 
     // DELETE /api/items/:id - Delete item
     this.router.delete(
       '/:id',
       ValidationMiddleware.params(IdParamDto),
-      controller.deleteItem.bind(controller)
+      controller.deleteItem
     );
   }
 

@@ -17,7 +17,7 @@ class ItemController {
    * GET /api/items
    * Get all items
    */
-  public async getItems(req: Request, res: Response): Promise<void> {
+  getItems =  async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.itemService.getAllItems();
 
@@ -40,7 +40,7 @@ class ItemController {
    * Get item by ID
    * Note: ID validation is handled by middleware
    */
-  public async getItemById(req: Request, res: Response): Promise<void> {
+  getItemById = async (req: Request, res: Response): Promise<void> => {
     try {
       // ID is already validated and converted by middleware
       const { id } = req.params as unknown as IdParamDto;
@@ -65,7 +65,7 @@ class ItemController {
    * Create a new item
    * Note: Body validation is handled by middleware
    */
-  public async createItem(req: Request, res: Response): Promise<void> {
+  createItem = async (req: Request, res: Response): Promise<void> => {
     try {
       // Body is already validated and transformed to CreateItemDto by middleware
       const createItemDto = req.body as CreateItemDto;
@@ -90,7 +90,7 @@ class ItemController {
    * Update an item
    * Note: ID and body validation is handled by middleware
    */
-  public async updateItem(req: Request, res: Response): Promise<void> {
+  updateItem = async (req: Request, res: Response): Promise<void> => {
     try {
       // ID and body are already validated by middleware
       const { id } = req.params as unknown as IdParamDto;
@@ -116,7 +116,7 @@ class ItemController {
    * Delete an item
    * Note: ID validation is handled by middleware
    */
-  public async deleteItem(req: Request, res: Response): Promise<void> {
+  deleteItem = async (req: Request, res: Response): Promise<void> => {
     try {
       // ID is already validated and converted by middleware
       const { id } = req.params as unknown as IdParamDto;
