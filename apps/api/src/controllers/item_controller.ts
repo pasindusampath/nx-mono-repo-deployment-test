@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ItemService } from '../services';
 import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared/src/dtos';
-import { AppError } from '../middleware/errorHandler';
 
 /**
  * Controller for Item endpoints

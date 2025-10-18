@@ -7,7 +7,7 @@ import { Server as HttpServer } from 'http';
 import Database from './database';
 import { RouterManager } from './routes';
 import { normalizeResponse, errorHandler } from './middleware';
-import { Environment, getCurrentEnvironment, getEnvironmentDisplayName, isDevelopment } from './enums';
+import { getCurrentEnvironment, getEnvironmentDisplayName, isDevelopment } from './enums';
 
 /**
  * Server class - Handles application lifecycle

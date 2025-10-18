@@ -19,7 +19,7 @@ class HealthController {
    * Health check endpoint with database status
    * Returns custom IHealthResponse format for monitoring compatibility
    */
-  public async health(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async health(req: Request, res: Response, _next: NextFunction): Promise<void> {
     try {
       const isDbConnected = await this.database.testConnection();
 
@@ -59,7 +59,7 @@ class HealthController {
    * Readiness check endpoint for Kubernetes/Docker health probes
    * Returns custom IReadyResponse format
    */
-  public async ready(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async ready(req: Request, res: Response, _next: NextFunction): Promise<void> {
     try {
       const isDbConnected = await this.database.testConnection();
 

@@ -49,7 +49,7 @@ RUN addgroup -g 1001 -S nodejs && \
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist/libs/shared ./dist/libs/shared
+COPY --from=builder /app/libs/shared ./libs/shared
 
 # Set environment
 ENV NODE_ENV=production
