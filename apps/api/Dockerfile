@@ -58,4 +58,6 @@ USER nodejs
 
 EXPOSE 3009
 
-CMD ["node", "dist/main.js"]
+# Note: Check actual path in dist folder
+# If nested: dist/apps/api/src/main.js or just dist/main.js
+CMD ["node", "dist/apps/api/src/main.js"]
