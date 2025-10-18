@@ -82,16 +82,25 @@ jobs:
               git pull origin develop
             fi
             
-            # Create environment-specific .env file
-            echo "Creating DEV environment file..."
+            # Create environment-specific .env files
+            echo "Creating DEV environment files..."
+            
+            # API env file
             cat > apps/api/.env.dev << 'EOF'
             NODE_ENV=development
-            PORT=3000
-            DB_HOST=${{ secrets.DEV_DB_HOST || 'localhost' }}
-            DB_PORT=${{ secrets.DEV_DB_PORT || '5432' }}
+            PORT=3010
+            DB_HOST=${{ secrets.DEV_DB_HOST }}
+            DB_PORT=${{ secrets.DEV_DB_PORT }}
             DB_NAME=${{ secrets.DEV_DB_NAME }}
             DB_USER=${{ secrets.DEV_DB_USER }}
             DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}
+            EOF
+            
+            # Web env file
+            cat > apps/web/.env.dev << 'EOF'
+            NODE_ENV=development
+            PORT=3020
+            API_URL=http://localhost:3010
             EOF
             
             # Create network if it doesn't exist
