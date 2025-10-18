@@ -37,6 +37,7 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Not Found' });
 });
 
+//test commit
 app.listen(port, () => {
   console.log(`🚀 API Server is running on port ${port}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
