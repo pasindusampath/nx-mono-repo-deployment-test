@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ItemService } from '../services';
 import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared/src/dtos';
+import { AppError } from '../middleware/errorHandler';
 
 /**
  * Controller for Item endpoints
  * Handles HTTP requests and responses
+ * Uses response/error handler middleware for consistent responses
  */
 class ItemController {
   private itemService: ItemService;
@@ -17,21 +19,17 @@ class ItemController {
    * GET /api/items
    * Get all items
    */
-  getItems =  async (req: Request, res: Response): Promise<void> => {
+  getItems = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const result = await this.itemService.getAllItems();
 
-      if (result.success) {
-        res.status(200).json(result);
+      if (result.success && result.data) {
+        res.sendSuccess(result.data, result.message, 200);
       } else {
-        res.status(500).json(result);
+        res.sendError(result.error || 'Failed to retrieve items', 500);
       }
     } catch (error) {
-      console.error('Error in ItemController.getItems:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      next(error);
     }
   }
 
@@ -40,23 +38,19 @@ class ItemController {
    * Get item by ID
    * Note: ID validation is handled by middleware
    */
-  getItemById = async (req: Request, res: Response): Promise<void> => {
+  getItemById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // ID is already validated and converted by middleware
       const { id } = req.params as unknown as IdParamDto;
       const result = await this.itemService.getItemById(id);
 
-      if (result.success) {
-        res.status(200).json(result);
+      if (result.success && result.data) {
+        res.sendSuccess(result.data, result.message, 200);
       } else {
-        res.status(404).json(result);
+        res.sendError(result.error || 'Item not found', 404);
       }
     } catch (error) {
-      console.error('Error in ItemController.getItemById:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      next(error);
     }
   }
 
@@ -65,23 +59,19 @@ class ItemController {
    * Create a new item
    * Note: Body validation is handled by middleware
    */
-  createItem = async (req: Request, res: Response): Promise<void> => {
+  createItem = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // Body is already validated and transformed to CreateItemDto by middleware
       const createItemDto = req.body as CreateItemDto;
       const result = await this.itemService.createItem(createItemDto);
 
-      if (result.success) {
-        res.status(201).json(result);
+      if (result.success && result.data) {
+        res.sendSuccess(result.data, result.message || 'Item created successfully', 201);
       } else {
-        res.status(400).json(result);
+        res.sendError(result.error || 'Failed to create item', 400);
       }
     } catch (error) {
-      console.error('Error in ItemController.createItem:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      next(error);
     }
   }
 
@@ -90,24 +80,20 @@ class ItemController {
    * Update an item
    * Note: ID and body validation is handled by middleware
    */
-  updateItem = async (req: Request, res: Response): Promise<void> => {
+  updateItem = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // ID and body are already validated by middleware
       const { id } = req.params as unknown as IdParamDto;
       const updateItemDto = req.body as UpdateItemDto;
       const result = await this.itemService.updateItem(id, updateItemDto);
 
-      if (result.success) {
-        res.status(200).json(result);
+      if (result.success && result.data) {
+        res.sendSuccess(result.data, result.message || 'Item updated successfully', 200);
       } else {
-        res.status(404).json(result);
+        res.sendError(result.error || 'Item not found', 404);
       }
     } catch (error) {
-      console.error('Error in ItemController.updateItem:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      next(error);
     }
   }
 
@@ -116,23 +102,19 @@ class ItemController {
    * Delete an item
    * Note: ID validation is handled by middleware
    */
-  deleteItem = async (req: Request, res: Response): Promise<void> => {
+  deleteItem = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // ID is already validated and converted by middleware
       const { id } = req.params as unknown as IdParamDto;
       const result = await this.itemService.deleteItem(id);
 
       if (result.success) {
-        res.status(200).json(result);
+        res.sendSuccess(null, result.message || 'Item deleted successfully', 200);
       } else {
-        res.status(404).json(result);
+        res.sendError(result.error || 'Item not found', 404);
       }
     } catch (error) {
-      console.error('Error in ItemController.deleteItem:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      next(error);
     }
   }
 }

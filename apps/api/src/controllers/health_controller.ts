@@ -1,9 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Database from '../database';
 import { IHealthResponse, IReadyResponse } from '@nx-mono-repo-deployment-test/shared';
 
 /**
  * Controller for Health Check endpoints
+ * Note: Health endpoints use custom response formats (not IApiResponse)
+ * This is intentional for monitoring tools compatibility
  */
 class HealthController {
   private database: Database;
@@ -15,8 +17,9 @@ class HealthController {
   /**
    * GET /health
    * Health check endpoint with database status
+   * Returns custom IHealthResponse format for monitoring compatibility
    */
-  public async health(req: Request, res: Response): Promise<void> {
+  public async health(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const isDbConnected = await this.database.testConnection();
 
@@ -34,6 +37,8 @@ class HealthController {
       const statusCode = isDbConnected ? 200 : 503;
       res.status(statusCode).json(response);
     } catch (error) {
+      // For health checks, we handle errors directly instead of using next()
+      // This ensures monitoring tools always get a response
       console.error('Error in HealthController.health:', error);
       res.status(503).json({
         status: 'unhealthy',
@@ -42,16 +47,19 @@ class HealthController {
         environment: process.env.NODE_ENV || 'development',
         database: {
           connected: false,
+          type: 'PostgreSQL',
         },
+        error: process.env.NODE_ENV === 'development' ? String(error) : undefined,
       });
     }
   }
 
   /**
    * GET /health/ready
-   * Readiness check endpoint
+   * Readiness check endpoint for Kubernetes/Docker health probes
+   * Returns custom IReadyResponse format
    */
-  public async ready(req: Request, res: Response): Promise<void> {
+  public async ready(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const isDbConnected = await this.database.testConnection();
 
@@ -59,6 +67,7 @@ class HealthController {
         res.status(503).json({
           status: 'not ready',
           timestamp: new Date().toISOString(),
+          reason: 'Database not connected',
         });
         return;
       }
@@ -70,10 +79,12 @@ class HealthController {
 
       res.status(200).json(response);
     } catch (error) {
+      // For readiness checks, we handle errors directly
       console.error('Error in HealthController.ready:', error);
       res.status(503).json({
         status: 'not ready',
         timestamp: new Date().toISOString(),
+        reason: process.env.NODE_ENV === 'development' ? String(error) : 'Service unavailable',
       });
     }
   }

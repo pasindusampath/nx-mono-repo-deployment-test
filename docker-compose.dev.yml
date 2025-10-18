@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  api-dev:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: nx-api-dev
+    ports:
+      - "3010:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    env_file:
+      - apps/api/.env.dev
+    restart: unless-stopped
+    networks:
+      - npm_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  web-dev:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: nx-web-dev
+    ports:
+      - "3020:3008"
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://nx-api-dev:3000
+      - PORT=3008
+    depends_on:
+      - api-dev
+    restart: unless-stopped
+    networks:
+      - npm_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3008"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  npm_network:
+    external: true
+

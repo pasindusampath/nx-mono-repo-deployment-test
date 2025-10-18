@@ -57,6 +57,16 @@ Thumbs.db
 .env.test.local
 .env.production.local
 
+# Environment-specific files (multi-environment setup)
+.env.dev
+.env.qa
+.env.staging
+.env.prod
+apps/api/.env.dev
+apps/api/.env.qa
+apps/api/.env.staging
+apps/api/.env.prod
+
 # NX
 .nx/cache
 .nx/workspace-data
@@ -65,7 +75,7 @@ Thumbs.db
 docker/nginx/ssl/*.pem
 docker/nginx/ssl/*.key
 
-# Documentation
+# Documentation (keeping docs/ but ignoring generated docs)
 docs/
 
 # Cursor AI
