@@ -100,9 +100,12 @@ jobs:
               docker network create npm_network
             fi
             
-            # Stop and remove DEV containers
+            # Stop and remove DEV containers (including orphans)
             echo "Stopping DEV containers..."
-            docker-compose -f docker-compose.dev.yml down || true
+            docker-compose -f docker-compose.dev.yml down --remove-orphans || true
+            
+            # Force remove any containers with conflicting names
+            docker rm -f nx-api-dev nx-web-dev 2>/dev/null || true
             
             # Build images
             echo "Building DEV images..."
