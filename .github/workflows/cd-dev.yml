@@ -63,21 +63,24 @@ jobs:
           script: |
             set -e
             
-            # Check if directory exists
-            if [ ! -d "/opt/nx-mono-repo" ]; then
-              echo "Error: /opt/nx-mono-repo does not exist!"
-              echo "Please run the VPS setup script first."
-              exit 1
+            # Check if directory exists, create if needed
+            if [ ! -d "/opt/nx-mono-repo-dev" ]; then
+              echo "Creating /opt/nx-mono-repo-dev directory..."
+              sudo mkdir -p /opt/nx-mono-repo-dev
+              sudo chown -R $USER:$USER /opt/nx-mono-repo-dev
+              cd /opt/nx-mono-repo-dev
+              git clone ${{ github.server_url }}/${{ github.repository }} .
+              git checkout develop
+            else
+              # Navigate to deployment directory
+              cd /opt/nx-mono-repo-dev
+              
+              # Pull latest changes
+              echo "Pulling latest changes..."
+              git fetch origin
+              git checkout develop
+              git pull origin develop
             fi
-            
-            # Navigate to deployment directory
-            cd /opt/nx-mono-repo
-            
-            # Pull latest changes
-            echo "Pulling latest changes..."
-            git fetch origin
-            git checkout develop || git checkout dev || git checkout main
-            git pull
             
             # Create environment-specific .env file
             echo "Creating DEV environment file..."
