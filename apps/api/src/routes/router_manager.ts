@@ -8,6 +8,13 @@ interface RouterLike {
   getRouter(): Router;
 }
 
+// Type guard to check if an object is RouterLike
+function isRouterLike(router: Router | RouterLike): router is RouterLike {
+  return 'getBasePath' in router && 'getRouter' in router && 
+         typeof (router as RouterLike).getBasePath === 'function' &&
+         typeof (router as RouterLike).getRouter === 'function';
+}
+
 // Route prefix constants
 const API_PREFIX = '/api'; // Prefix for all API routes
 
@@ -101,9 +108,9 @@ export class RouterManager {
   public addRouter(router: Router | RouterLike, customPath?: string): void {
     if (customPath) {
       // Use custom path if provided
-      this.mainRouter.use(customPath, router instanceof Router ? router : router.getRouter());
-    } else if (router.getBasePath && typeof router.getBasePath === 'function') {
-      // Use router's own base path if it's a BaseRouter (no API prefix)
+      this.mainRouter.use(customPath, isRouterLike(router) ? router.getRouter() : router);
+    } else if (isRouterLike(router)) {
+      // Use router's own base path if it's a RouterLike (no API prefix)
       this.mainRouter.use(router.getBasePath(), router.getRouter());
     } else {
       throw new Error('Router must either extend BaseRouter with getBasePath() or provide a custom path');

@@ -2,13 +2,6 @@ import { Request, Response } from 'express';
 import { ItemService } from '../services';
 import { CreateItemDto, UpdateItemDto, IdParamDto } from '@nx-mono-repo-deployment-test/shared';
 
-// Typed request interfaces using Express generic types
-interface RequestWithIdParams extends Request<IdParamDto> {}
-
-interface RequestWithCreateBody extends Request<Record<string, never>, unknown, CreateItemDto> {}
-
-interface RequestWithUpdateBodyAndIdParams extends Request<IdParamDto, unknown, UpdateItemDto> {}
-
 /**
  * Controller for Item endpoints
  * Handles HTTP requests and responses
@@ -47,10 +40,10 @@ class ItemController {
    * Get item by ID
    * Note: ID validation is handled by middleware
    */
-  public async getItemById(req: RequestWithIdParams, res: Response): Promise<void> {
+  public async getItemById(req: Request, res: Response): Promise<void> {
     try {
       // ID is already validated and converted by middleware
-      const { id } = req.params;
+      const { id } = req.params as unknown as IdParamDto;
       const result = await this.itemService.getItemById(id);
 
       if (result.success) {
@@ -72,10 +65,10 @@ class ItemController {
    * Create a new item
    * Note: Body validation is handled by middleware
    */
-  public async createItem(req: RequestWithCreateBody, res: Response): Promise<void> {
+  public async createItem(req: Request, res: Response): Promise<void> {
     try {
       // Body is already validated and transformed to CreateItemDto by middleware
-      const createItemDto = req.body;
+      const createItemDto = req.body as CreateItemDto;
       const result = await this.itemService.createItem(createItemDto);
 
       if (result.success) {
@@ -97,11 +90,11 @@ class ItemController {
    * Update an item
    * Note: ID and body validation is handled by middleware
    */
-  public async updateItem(req: RequestWithUpdateBodyAndIdParams, res: Response): Promise<void> {
+  public async updateItem(req: Request, res: Response): Promise<void> {
     try {
       // ID and body are already validated by middleware
-      const { id } = req.params;
-      const updateItemDto = req.body;
+      const { id } = req.params as unknown as IdParamDto;
+      const updateItemDto = req.body as UpdateItemDto;
       const result = await this.itemService.updateItem(id, updateItemDto);
 
       if (result.success) {
@@ -123,10 +116,10 @@ class ItemController {
    * Delete an item
    * Note: ID validation is handled by middleware
    */
-  public async deleteItem(req: RequestWithIdParams, res: Response): Promise<void> {
+  public async deleteItem(req: Request, res: Response): Promise<void> {
     try {
       // ID is already validated and converted by middleware
-      const { id } = req.params;
+      const { id } = req.params as unknown as IdParamDto;
       const result = await this.itemService.deleteItem(id);
 
       if (result.success) {
