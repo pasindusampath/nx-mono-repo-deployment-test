@@ -15,7 +15,5 @@ coverage
 .github
 .next
 out
-
-# Include .yarn directory for Yarn 4
-!.yarn
+.yarn
 

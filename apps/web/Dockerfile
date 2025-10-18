@@ -10,11 +10,10 @@ WORKDIR /app
 
 # Copy workspace files
 COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn
 COPY apps/web/package.json ./apps/web/
 
 # Install dependencies (including dev dependencies for build)
-RUN yarn workspaces focus web
+RUN yarn workspaces focus web --frozen-lockfile
 
 # Build stage
 FROM base AS builder
@@ -25,7 +24,6 @@ COPY --from=deps /app/node_modules ./node_modules
 
 # Copy workspace configuration
 COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn
 
 # Copy application files
 COPY apps/web ./apps/web

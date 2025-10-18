@@ -9,7 +9,6 @@ WORKDIR /app
 
 # Copy workspace files
 COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn
 COPY apps/api/package.json ./apps/api/
 COPY apps/api/tsconfig.json ./apps/api/
 COPY libs/shared/package.json ./libs/shared/
@@ -18,7 +17,8 @@ COPY libs/shared/project.json ./libs/shared/
 COPY tsconfig.base.json ./
 
 # Install dependencies (including dev dependencies for build)
-RUN yarn install --immutable
+# Note: Using regular install in Docker since we're building from scratch
+RUN yarn install --frozen-lockfile
 
 # Copy source code
 COPY apps/api/src ./apps/api/src
