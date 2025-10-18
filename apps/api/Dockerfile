@@ -49,7 +49,11 @@ RUN addgroup -g 1001 -S nodejs && \
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/libs/shared ./libs/shared
+# Copy shared library source (for package.json and structure)
+COPY --from=builder /app/libs/shared/package.json ./libs/shared/package.json
+COPY --from=builder /app/libs/shared/tsconfig.json ./libs/shared/tsconfig.json
+# Copy built shared library files to the src location (where symlink expects them)
+COPY --from=builder /app/dist/libs/shared/libs/shared/src ./libs/shared/src
 
 # Set environment
 ENV NODE_ENV=production
