@@ -39,7 +39,19 @@ class Server {
    */
   private setupMiddleware(): void {
     this.app.use(helmet());
-    this.app.use(cors());
+    
+    // CORS configuration - allow frontend domains
+    const allowedOrigins = process.env.CORS_ORIGIN 
+      ? process.env.CORS_ORIGIN.split(',') 
+      : ['*'];
+    
+    this.app.use(cors({
+      origin: allowedOrigins,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    }));
+    
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(morgan('combined'));

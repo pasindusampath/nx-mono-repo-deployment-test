@@ -63,32 +63,45 @@ jobs:
           script: |
             set -e
             
-            # Check if directory exists
-            if [ ! -d "/opt/nx-mono-repo" ]; then
-              echo "Error: /opt/nx-mono-repo does not exist!"
-              echo "Please run the VPS setup script first."
-              exit 1
+            # Check if directory exists, create if needed
+            if [ ! -d "/opt/nx-mono-repo-staging" ]; then
+              echo "Creating /opt/nx-mono-repo-staging directory..."
+              sudo mkdir -p /opt/nx-mono-repo-staging
+              sudo chown -R $USER:$USER /opt/nx-mono-repo-staging
+              cd /opt/nx-mono-repo-staging
+              git clone ${{ github.server_url }}/${{ github.repository }} .
+              git checkout staging
+            else
+              # Navigate to deployment directory
+              cd /opt/nx-mono-repo-staging
+              
+              # Pull latest changes
+              echo "Pulling latest changes..."
+              git fetch origin
+              git checkout staging
+              git pull origin staging
             fi
             
-            # Navigate to deployment directory
-            cd /opt/nx-mono-repo
+            # Create environment-specific .env files
+            echo "Creating STAGING environment files..."
             
-            # Pull latest changes
-            echo "Pulling latest changes..."
-            git fetch origin
-            git checkout staging || git checkout main
-            git pull
-            
-            # Create environment-specific .env file
-            echo "Creating STAGING environment file..."
+            # API env file
             cat > apps/api/.env.staging << 'EOF'
             NODE_ENV=staging
-            PORT=3002
-            DB_HOST=${{ secrets.STAGING_DB_HOST || 'localhost' }}
-            DB_PORT=${{ secrets.STAGING_DB_PORT || '5432' }}
+            PORT=3012
+            DB_HOST=127.0.0.1
+            DB_PORT=${{ secrets.STAGING_DB_PORT }}
             DB_NAME=${{ secrets.STAGING_DB_NAME }}
             DB_USER=${{ secrets.STAGING_DB_USER }}
             DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
+            CORS_ORIGIN=https://staging-web.pasindusampath.com
+            EOF
+            
+            # Web env file
+            cat > apps/web/.env.staging << 'EOF'
+            NODE_ENV=staging
+            PORT=3022
+            NEXT_PUBLIC_API_URL=https://staging-api.pasindusampath.com
             EOF
             
             # Create network if it doesn't exist
@@ -97,9 +110,12 @@ jobs:
               docker network create npm_network
             fi
             
-            # Stop and remove STAGING containers
+            # Stop and remove STAGING containers (including orphans)
             echo "Stopping STAGING containers..."
-            docker-compose -f docker-compose.staging.yml down || true
+            docker-compose -f docker-compose.staging.yml down --remove-orphans || true
+            
+            # Force remove any containers with conflicting names
+            docker rm -f nx-api-staging nx-web-staging 2>/dev/null || true
             
             # Build images
             echo "Building STAGING images..."
@@ -124,12 +140,13 @@ jobs:
         run: |
           sleep 30
           echo "Checking STAGING health endpoint..."
-          curl -f http://${{ secrets.VPS_HOST }}:3012/health || exit 1
+          curl -f https://staging-api.pasindusampath.com/health || curl -f http://${{ secrets.VPS_HOST }}:3012/health || exit 1
         continue-on-error: true
       
       - name: Notify deployment status
         if: always()
         run: |
           echo "🚀 STAGING Deployment completed with status: ${{ job.status }}"
-          echo "📍 URL: http://${{ secrets.VPS_HOST }}:3012"
+          echo "📍 API URL: https://staging-api.pasindusampath.com"
+          echo "📍 Web URL: https://staging-web.pasindusampath.com"
 

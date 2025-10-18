@@ -6,18 +6,12 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     container_name: nx-api-qa
-    ports:
-      - "3011:3001"
-    environment:
-      - NODE_ENV=qa
-      - PORT=3001
+    network_mode: "host"
     env_file:
       - apps/api/.env.qa
     restart: unless-stopped
-    networks:
-      - npm_network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3011/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -28,25 +22,16 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     container_name: nx-web-qa
-    ports:
-      - "3021:3008"
-    environment:
-      - NODE_ENV=qa
-      - API_URL=http://nx-api-qa:3001
-      - PORT=3008
-    depends_on:
-      - api-qa
+    network_mode: "host"
+    env_file:
+      - apps/web/.env.qa
     restart: unless-stopped
-    networks:
-      - npm_network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3008"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3021"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-networks:
-  npm_network:
-    external: true
+# Using host network mode - no need for external network
 

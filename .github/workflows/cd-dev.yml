@@ -94,13 +94,14 @@ jobs:
             DB_NAME=${{ secrets.DEV_DB_NAME }}
             DB_USER=${{ secrets.DEV_DB_USER }}
             DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}
+            CORS_ORIGIN=https://dev-web.pasindusampath.com
             EOF
             
             # Web env file
             cat > apps/web/.env.dev << 'EOF'
             NODE_ENV=development
             PORT=3020
-            API_URL=http://localhost:3010
+            NEXT_PUBLIC_API_URL=https://dev-api.pasindusampath.com
             EOF
             
             # Create network if it doesn't exist
@@ -139,12 +140,13 @@ jobs:
         run: |
           sleep 30
           echo "Checking DEV health endpoint..."
-          curl -f http://${{ secrets.VPS_HOST }}:3010/health || exit 1
+          curl -f https://dev-api.pasindusampath.com/health || curl -f http://${{ secrets.VPS_HOST }}:3010/health || exit 1
         continue-on-error: true
       
       - name: Notify deployment status
         if: always()
         run: |
           echo "🚀 DEV Deployment completed with status: ${{ job.status }}"
-          echo "📍 URL: http://${{ secrets.VPS_HOST }}:3010"
+          echo "📍 API URL: https://dev-api.pasindusampath.com"
+          echo "📍 Web URL: https://dev-web.pasindusampath.com"
 

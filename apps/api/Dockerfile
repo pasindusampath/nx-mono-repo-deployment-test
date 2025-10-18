@@ -57,11 +57,11 @@ COPY --from=builder /app/dist/libs/shared/libs/shared/src ./libs/shared/src
 
 # Set environment
 ENV NODE_ENV=production
-ENV PORT=3009
+ENV PORT=3013
 
 USER nodejs
 
-EXPOSE 3009
+EXPOSE 3013
 
 # Note: Check actual path in dist folder
 # If nested: dist/apps/api/src/main.js or just dist/main.js

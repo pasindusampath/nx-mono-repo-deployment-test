@@ -63,32 +63,45 @@ jobs:
           script: |
             set -e
             
-            # Check if directory exists
-            if [ ! -d "/opt/nx-mono-repo" ]; then
-              echo "Error: /opt/nx-mono-repo does not exist!"
-              echo "Please run the VPS setup script first."
-              exit 1
+            # Check if directory exists, create if needed
+            if [ ! -d "/opt/nx-mono-repo-prod" ]; then
+              echo "Creating /opt/nx-mono-repo-prod directory..."
+              sudo mkdir -p /opt/nx-mono-repo-prod
+              sudo chown -R $USER:$USER /opt/nx-mono-repo-prod
+              cd /opt/nx-mono-repo-prod
+              git clone ${{ github.server_url }}/${{ github.repository }} .
+              git checkout main
+            else
+              # Navigate to deployment directory
+              cd /opt/nx-mono-repo-prod
+              
+              # Pull latest changes
+              echo "Pulling latest changes..."
+              git fetch origin
+              git checkout main
+              git pull origin main
             fi
             
-            # Navigate to deployment directory
-            cd /opt/nx-mono-repo
+            # Create environment-specific .env files
+            echo "Creating PRODUCTION environment files..."
             
-            # Pull latest changes
-            echo "Pulling latest changes..."
-            git fetch origin
-            git checkout production || git checkout main
-            git pull
-            
-            # Create environment-specific .env file
-            echo "Creating PRODUCTION environment file..."
+            # API env file
             cat > apps/api/.env.prod << 'EOF'
             NODE_ENV=production
-            PORT=3009
-            DB_HOST=${{ secrets.PROD_DB_HOST || 'localhost' }}
-            DB_PORT=${{ secrets.PROD_DB_PORT || '5432' }}
+            PORT=3013
+            DB_HOST=127.0.0.1
+            DB_PORT=${{ secrets.PROD_DB_PORT }}
             DB_NAME=${{ secrets.PROD_DB_NAME }}
             DB_USER=${{ secrets.PROD_DB_USER }}
             DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
+            CORS_ORIGIN=https://web.pasindusampath.com,https://pasindusampath.com
+            EOF
+            
+            # Web env file
+            cat > apps/web/.env.prod << 'EOF'
+            NODE_ENV=production
+            PORT=3023
+            NEXT_PUBLIC_API_URL=https://api.pasindusampath.com
             EOF
             
             # Create network if it doesn't exist
@@ -97,9 +110,12 @@ jobs:
               docker network create npm_network
             fi
             
-            # Stop and remove PRODUCTION containers
+            # Stop and remove PRODUCTION containers (including orphans)
             echo "Stopping PRODUCTION containers..."
-            docker-compose -f docker-compose.prod.yml down || true
+            docker-compose -f docker-compose.prod.yml down --remove-orphans || true
+            
+            # Force remove any containers with conflicting names
+            docker rm -f nx-api-prod nx-web-prod 2>/dev/null || true
             
             # Build images
             echo "Building PRODUCTION images..."
@@ -124,12 +140,13 @@ jobs:
         run: |
           sleep 30
           echo "Checking PRODUCTION health endpoint..."
-          curl -f http://${{ secrets.VPS_HOST }}:3009/health || exit 1
+          curl -f https://api.pasindusampath.com/health || curl -f http://${{ secrets.VPS_HOST }}:3013/health || exit 1
         continue-on-error: true
       
       - name: Notify deployment status
         if: always()
         run: |
           echo "🚀 PRODUCTION Deployment completed with status: ${{ job.status }}"
-          echo "📍 URL: http://${{ secrets.VPS_HOST }}:3009"
+          echo "📍 API URL: https://api.pasindusampath.com"
+          echo "📍 Web URL: https://pasindusampath.com"
 

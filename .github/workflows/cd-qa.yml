@@ -63,32 +63,45 @@ jobs:
           script: |
             set -e
             
-            # Check if directory exists
-            if [ ! -d "/opt/nx-mono-repo" ]; then
-              echo "Error: /opt/nx-mono-repo does not exist!"
-              echo "Please run the VPS setup script first."
-              exit 1
+            # Check if directory exists, create if needed
+            if [ ! -d "/opt/nx-mono-repo-qa" ]; then
+              echo "Creating /opt/nx-mono-repo-qa directory..."
+              sudo mkdir -p /opt/nx-mono-repo-qa
+              sudo chown -R $USER:$USER /opt/nx-mono-repo-qa
+              cd /opt/nx-mono-repo-qa
+              git clone ${{ github.server_url }}/${{ github.repository }} .
+              git checkout qa
+            else
+              # Navigate to deployment directory
+              cd /opt/nx-mono-repo-qa
+              
+              # Pull latest changes
+              echo "Pulling latest changes..."
+              git fetch origin
+              git checkout qa
+              git pull origin qa
             fi
             
-            # Navigate to deployment directory
-            cd /opt/nx-mono-repo
+            # Create environment-specific .env files
+            echo "Creating QA environment files..."
             
-            # Pull latest changes
-            echo "Pulling latest changes..."
-            git fetch origin
-            git checkout qa || git checkout main
-            git pull
-            
-            # Create environment-specific .env file
-            echo "Creating QA environment file..."
+            # API env file
             cat > apps/api/.env.qa << 'EOF'
             NODE_ENV=qa
-            PORT=3001
-            DB_HOST=${{ secrets.QA_DB_HOST || 'localhost' }}
-            DB_PORT=${{ secrets.QA_DB_PORT || '5432' }}
+            PORT=3011
+            DB_HOST=127.0.0.1
+            DB_PORT=${{ secrets.QA_DB_PORT }}
             DB_NAME=${{ secrets.QA_DB_NAME }}
             DB_USER=${{ secrets.QA_DB_USER }}
             DB_PASSWORD=${{ secrets.QA_DB_PASSWORD }}
+            CORS_ORIGIN=https://qa-web.pasindusampath.com
+            EOF
+            
+            # Web env file
+            cat > apps/web/.env.qa << 'EOF'
+            NODE_ENV=qa
+            PORT=3021
+            NEXT_PUBLIC_API_URL=https://qa-api.pasindusampath.com
             EOF
             
             # Create network if it doesn't exist
@@ -97,9 +110,12 @@ jobs:
               docker network create npm_network
             fi
             
-            # Stop and remove QA containers
+            # Stop and remove QA containers (including orphans)
             echo "Stopping QA containers..."
-            docker-compose -f docker-compose.qa.yml down || true
+            docker-compose -f docker-compose.qa.yml down --remove-orphans || true
+            
+            # Force remove any containers with conflicting names
+            docker rm -f nx-api-qa nx-web-qa 2>/dev/null || true
             
             # Build images
             echo "Building QA images..."
@@ -124,12 +140,13 @@ jobs:
         run: |
           sleep 30
           echo "Checking QA health endpoint..."
-          curl -f http://${{ secrets.VPS_HOST }}:3011/health || exit 1
+          curl -f https://qa-api.pasindusampath.com/health || curl -f http://${{ secrets.VPS_HOST }}:3011/health || exit 1
         continue-on-error: true
       
       - name: Notify deployment status
         if: always()
         run: |
           echo "🚀 QA Deployment completed with status: ${{ job.status }}"
-          echo "📍 URL: http://${{ secrets.VPS_HOST }}:3011"
+          echo "📍 API URL: https://qa-api.pasindusampath.com"
+          echo "📍 Web URL: https://qa-web.pasindusampath.com"
 
